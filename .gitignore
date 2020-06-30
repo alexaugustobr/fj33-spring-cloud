@@ -21,3 +21,48 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# See http:/help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/eats-ui/dist
+/eats-ui/tmp
+/eats-ui/out-tsc
+
+# dependencies
+/eats-ui/node_modules
+
+# profiling files
+/eats-uichrome-profiler-events.json
+/eats-uispeed-measure-plugin.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/eats-ui/.sass-cache
+/eats-ui/connect.lock
+/eats-ui/coverage
+/eats-ui/libpeerconnection.log
+/eats-ui/npm-debug.log
+/eats-ui/yarn-error.log
+/eats-ui/testem.log
+/eats-ui/typings
+
+# System Files
+.DS_Store
+Thumbs.db
