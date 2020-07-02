@@ -1,0 +1,51 @@
+version: '3.3'
+
+services:
+
+  eats-application-db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart:
+      unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "caelum123"
+      MYSQL_DATABASE: "eats"
+    ports:
+      - "3306:3306"
+    networks:
+      - eats-network
+
+  eats-application:
+    build: ./eats-application
+    ports:
+      - "8080:8080"
+    tty:
+      true
+    restart:
+      unless-stopped
+    networks:
+      - eats-network
+    depends_on:
+      - eats-application-db
+    environment:
+      DATABASE_HOST: "eats-application-db"
+      DATABASE_USER: "root"
+      DATABASE_PASSWORD: "caelum123"
+      DATABASE_NAME: "eats"
+      DATABASE_PORT: "3306"
+      SPRING_PROFILES_ACTIVE: "docker-mysql"
+
+  eats-ui:
+    build: ./eats-ui
+    ports:
+      - "4200:80"
+    tty:
+      true
+    restart:
+      unless-stopped
+    networks:
+      - eats-network
+
+networks:
+  eats-network:
+    driver: bridge
