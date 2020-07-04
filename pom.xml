@@ -18,12 +18,12 @@
 	</properties>
 	<modules>
 		<module>eats-administrativo</module>
-		<module>eats-pagamento</module>
 		<module>eats-restaurante</module>
 		<module>eats-pedido</module>
 		<module>eats-distancia</module>
 		<module>eats-seguranca</module>
 		<module>eats-application</module>
+		<module>eats-pagamento-service</module>
 	</modules>
 	<dependencies>
 		<dependency>
