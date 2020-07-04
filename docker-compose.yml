@@ -15,6 +15,27 @@ services:
     networks:
       - eats-network
 
+  eats-pagamento-service:
+    build: ./eats-pagamento-service
+    ports:
+      - "8081:8081"
+    tty:
+      true
+    restart:
+      unless-stopped
+    networks:
+      - eats-network
+    depends_on:
+      - eats-application-db
+    environment:
+      DATABASE_HOST: "eats-application-db"
+      DATABASE_USER: "root"
+      DATABASE_PASSWORD: "caelum123"
+      DATABASE_NAME: "eats"
+      DATABASE_PORT: "3306"
+      SPRING_PROFILES_ACTIVE: "docker-mysql"
+      SERVER_PORT: "8081"
+
   eats-application:
     build: ./eats-application
     ports:
@@ -34,6 +55,7 @@ services:
       DATABASE_NAME: "eats"
       DATABASE_PORT: "3306"
       SPRING_PROFILES_ACTIVE: "docker-mysql"
+      SERVER_PORT: "8080"
 
   eats-ui:
     build: ./eats-ui

@@ -1,4 +1,4 @@
-package br.com.caelum.eats.pagamento;
+package br.com.caelum.eats.pagamento.service;
 
 import java.net.URI;
 
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.caelum.eats.pedido.Pedido;
-import br.com.caelum.eats.pedido.PedidoService;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -22,40 +20,40 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 class PagamentoController {
 
-	private PagamentoRepository pagamentoRepo;
-	private PedidoService pedidos;
+	private PagamentoRepository pagamentos;
 
 	@GetMapping("/{id}")
 	PagamentoDto detalha(@PathVariable("id") Long id) {
-		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+		Pagamento pagamento = pagamentos.findById(id).orElseThrow(() -> new ResourceNotFoundException());
 		return new PagamentoDto(pagamento);
 	}
 
 	@PostMapping
 	ResponseEntity<PagamentoDto> cria(@RequestBody Pagamento pagamento, UriComponentsBuilder uriBuilder) {
 		pagamento.setStatus(Pagamento.Status.CRIADO);
-		Pagamento salvo = pagamentoRepo.save(pagamento);
+		Pagamento salvo = pagamentos.save(pagamento);
 		URI path = uriBuilder.path("/pagamentos/{id}").buildAndExpand(salvo.getId()).toUri();
 		return ResponseEntity.created(path).body(new PagamentoDto(salvo));
 	}
 
 	@PutMapping("/{id}")
 	PagamentoDto confirma(@PathVariable("id") Long id) {
-		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+		Pagamento pagamento = pagamentos.findById(id).orElseThrow(() -> new ResourceNotFoundException());
 		pagamento.setStatus(Pagamento.Status.CONFIRMADO);
-		pagamentoRepo.save(pagamento);
-		Long pedidoId = pagamento.getPedido().getId();
-		Pedido pedido = pedidos.porIdComItens(pedidoId);
-		pedido.setStatus(Pedido.Status.PAGO);
-		pedidos.atualizaStatus(Pedido.Status.PAGO, pedido);
+		pagamentos.save(pagamento);
+		//TODO FIX ME - Aplicar lógica de alteração de status do pedido
+//		Long pedidoId = pagamento.getPedido().getId();
+//		Pedido pedido = pedidos.porIdComItens(pedidoId);
+//		pedido.setStatus(Pedido.Status.PAGO);
+//		pedidos.atualizaStatus(Pedido.Status.PAGO, pedido);
 		return new PagamentoDto(pagamento);
 	}
 
 	@DeleteMapping("/{id}")
 	PagamentoDto cancela(@PathVariable("id") Long id) {
-		Pagamento pagamento = pagamentoRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException());
+		Pagamento pagamento = pagamentos.findById(id).orElseThrow(() -> new ResourceNotFoundException());
 		pagamento.setStatus(Pagamento.Status.CANCELADO);
-		pagamentoRepo.save(pagamento);
+		pagamentos.save(pagamento);
 		return new PagamentoDto(pagamento);
 	}
 
