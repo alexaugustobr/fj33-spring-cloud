@@ -1,19 +1,50 @@
 version: '3.3'
 
-services:
+networks:
+  eats-network:
+    driver: bridge
 
-  eats-application-db:
-    image: mysql
+volumes:
+  mysql.eats.pagamento:
+  mongo.eats.distancia:
+
+services:
+  eats-application-mysql-db:
+    image: mysql:5.7
     command: --default-authentication-plugin=mysql_native_password
     restart:
       unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: "caelum123"
-      MYSQL_DATABASE: "eats"
+      MYSQL_ROOT_PASSWORD: caelum123
+      MYSQL_DATABASE: eats
     ports:
-      - "3306:3306"
+      - "3307:3306"
     networks:
       - eats-network
+
+  eats-pagamento-mysql-db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    restart:
+      unless-stopped
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: caelum123
+      MYSQL_DATABASE: eats_pagamento
+      MYSQL_USER: pagamento
+      MYSQL_PASSWORD: pagamento123
+    volumes:
+      - mysql.eats.pagamento:/var/lib/mysql
+    networks:
+      - eats-network
+
+  eats-distancia-mongo-db:
+    image: mongo:3.6
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo.eats.distancia:/data/db
 
   eats-pagamento-service:
     build: ./eats-pagamento-service
@@ -26,36 +57,36 @@ services:
     networks:
       - eats-network
     depends_on:
-      - eats-application-db
+      - eats-pagamento-mysql-db
     environment:
-      DATABASE_HOST: "eats-application-db"
-      DATABASE_USER: "root"
-      DATABASE_PASSWORD: "caelum123"
-      DATABASE_NAME: "eats"
-      DATABASE_PORT: "3306"
+      DATABASE_HOST: eats-pagamento-mysql-db
+      DATABASE_USER: pagamento
+      DATABASE_PASSWORD: pagamento123
+      DATABASE_NAME: eats_pagamento
+      DATABASE_PORT: 3306
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8081"
 
-  eats-distancia-service:
-    build: ./eats-distancia-service
-    ports:
-      - "8082:8082"
-    tty:
-      true
-    restart:
-      unless-stopped
-    networks:
-      - eats-network
-    depends_on:
-      - eats-application-db
-    environment:
-      DATABASE_HOST: "eats-application-db"
-      DATABASE_USER: "root"
-      DATABASE_PASSWORD: "caelum123"
-      DATABASE_NAME: "eats"
-      DATABASE_PORT: "3306"
-      SPRING_PROFILES_ACTIVE: "docker-mysql"
-      SERVER_PORT: "8082"
+#  eats-distancia-service:
+#    build: ./eats-distancia-service
+#    ports:
+#      - "8082:8082"
+#    tty:
+#      true
+#    restart:
+#      unless-stopped
+#    networks:
+#      - eats-network
+#    depends_on:
+#      - eats-application-mysql-db
+#    environment:
+#      DATABASE_HOST: "eats-application-mysql-db"
+#      DATABASE_USER: "root"
+#      DATABASE_PASSWORD: "caelum123"
+#      DATABASE_NAME: "eats_pagamento"
+#      DATABASE_PORT: "3306"
+#      SPRING_PROFILES_ACTIVE: "docker-mysql"
+#      SERVER_PORT: "8082"
 
   eats-application:
     build: ./eats-application
@@ -68,27 +99,24 @@ services:
     networks:
       - eats-network
     depends_on:
-      - eats-application-db
+      - eats-application-mysql-db
     environment:
-      DATABASE_HOST: "eats-application-db"
+      DATABASE_HOST: "eats-application-mysql-db"
       DATABASE_USER: "root"
       DATABASE_PASSWORD: "caelum123"
       DATABASE_NAME: "eats"
       DATABASE_PORT: "3306"
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8080"
+#
+#  eats-ui:
+#    build: ./eats-ui
+#    ports:
+#      - "4200:80"
+#    tty:
+#      true
+#    restart:
+#      unless-stopped
+#    networks:
+#      - eats-network
 
-  eats-ui:
-    build: ./eats-ui
-    ports:
-      - "4200:80"
-    tty:
-      true
-    restart:
-      unless-stopped
-    networks:
-      - eats-network
-
-networks:
-  eats-network:
-    driver: bridge
