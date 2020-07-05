@@ -45,7 +45,7 @@ docker-compose build
 docker-compose up
 ```
 
-#### Alernativamnete, execute todos os comandos de uma vez na pasta raiz do projeto:
+#### Alernativamente, execute todos os comandos de uma vez na pasta raiz do projeto:
 ```
  cd ./eats-ui && npm install && npm run ng build && cd .. && mvn clean install package && docker-compose build && docker-compose up
 ```
