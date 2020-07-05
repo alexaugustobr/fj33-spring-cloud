@@ -23,12 +23,12 @@ class DistanciaService {
 	private RestauranteRepository restaurantes;
 
 	List<RestauranteComDistanciaDto> restaurantesMaisProximosAoCep(String cep) {
-		List<Restaurante> aprovados = restaurantes.findAllByAprovado(true, LIMIT).getContent();
+		List<Restaurante> aprovados = restaurantes.findAll(LIMIT).getContent(); // modificado
 		return calculaDistanciaParaOsRestaurantes(aprovados, cep);
 	}
 
 	List<RestauranteComDistanciaDto> restaurantesDoTipoDeCozinhaMaisProximosAoCep(Long tipoDeCozinhaId, String cep) {
-		List<Restaurante> aprovadosDoTipoDeCozinha = restaurantes.findAllByAprovadoAndTipoDeCozinhaId(true, tipoDeCozinhaId, LIMIT).getContent();
+		List<Restaurante> aprovadosDoTipoDeCozinha = restaurantes.findAllByTipoDeCozinhaId(tipoDeCozinhaId, LIMIT).getContent();
 		return calculaDistanciaParaOsRestaurantes(aprovadosDoTipoDeCozinha, cep);
 	}
 

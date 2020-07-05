@@ -2,10 +2,10 @@ package br.com.caelum.eats;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface RestauranteRepository extends JpaRepository<Restaurante, Long> {
-	Page<Restaurante> findAllByAprovadoAndTipoDeCozinhaId(boolean aprovado, Long tipoDeCozinhaId, Pageable limit);
+public interface RestauranteRepository extends MongoRepository<Restaurante, Long> {
+	Page<Restaurante> findAllByTipoDeCozinhaId(Long tipoDeCozinhaId, Pageable limit);
 	
-	Page<Restaurante> findAllByAprovado(boolean aprovado, Pageable limit);
+	Page<Restaurante> findAll(Pageable limit);
 }

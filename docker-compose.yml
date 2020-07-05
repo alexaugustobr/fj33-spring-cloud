@@ -45,6 +45,8 @@ services:
       - "27018:27017"
     volumes:
       - mongo.eats.distancia:/data/db
+    networks:
+      - eats-network
 
   eats-pagamento-service:
     build: ./eats-pagamento-service
@@ -67,26 +69,24 @@ services:
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8081"
 
-#  eats-distancia-service:
-#    build: ./eats-distancia-service
-#    ports:
-#      - "8082:8082"
-#    tty:
-#      true
-#    restart:
-#      unless-stopped
-#    networks:
-#      - eats-network
-#    depends_on:
-#      - eats-application-mysql-db
-#    environment:
-#      DATABASE_HOST: "eats-application-mysql-db"
-#      DATABASE_USER: "root"
-#      DATABASE_PASSWORD: "caelum123"
-#      DATABASE_NAME: "eats_pagamento"
-#      DATABASE_PORT: "3306"
-#      SPRING_PROFILES_ACTIVE: "docker-mysql"
-#      SERVER_PORT: "8082"
+  eats-distancia-service:
+    build: ./eats-distancia-service
+    ports:
+      - "8082:8082"
+    tty:
+      true
+    restart:
+      unless-stopped
+    networks:
+      - eats-network
+    depends_on:
+      - eats-distancia-mongo-db
+    environment:
+      DATABASE_HOST: "eats-distancia-mongo-db"
+      DATABASE_NAME: "eats_distancia"
+      DATABASE_PORT: "27017"
+      SPRING_PROFILES_ACTIVE: "docker-mongodb"
+      SERVER_PORT: "8082"
 
   eats-application:
     build: ./eats-application
@@ -108,15 +108,15 @@ services:
       DATABASE_PORT: "3306"
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8080"
-#
-#  eats-ui:
-#    build: ./eats-ui
-#    ports:
-#      - "4200:80"
-#    tty:
-#      true
-#    restart:
-#      unless-stopped
-#    networks:
-#      - eats-network
+
+  eats-ui:
+    build: ./eats-ui
+    ports:
+      - "4200:80"
+    tty:
+      true
+    restart:
+      unless-stopped
+    networks:
+      - eats-network
 
