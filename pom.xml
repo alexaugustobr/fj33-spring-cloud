@@ -24,6 +24,7 @@
 		<module>eats-seguranca</module>
 		<module>eats-application</module>
 		<module>eats-pagamento-service</module>
+		<module>eats-distancia-service</module>
 	</modules>
 	<dependencies>
 		<dependency>
