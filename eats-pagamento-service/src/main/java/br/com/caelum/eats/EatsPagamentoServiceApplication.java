@@ -1,4 +1,4 @@
-package br.com.caelum.eats.pagamento.service;
+package br.com.caelum.eats;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

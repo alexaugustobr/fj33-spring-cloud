@@ -1,4 +1,4 @@
-package br.com.caelum.eats.pagamento.service;
+package br.com.caelum.eats;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package br.com.caelum.eats.pagamento.service;
+package br.com.caelum.eats;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
