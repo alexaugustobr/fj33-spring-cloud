@@ -1,7 +1,7 @@
 # FJ33-microservices-spring-cloud
 Curso FJ-33 da Caelum, do monolito aos microsserviços com java e spring cloud
 
-## Dependência:
+## Dependências:
 ```
 java-jdk
 maven

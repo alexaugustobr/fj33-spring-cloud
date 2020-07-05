@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   baseUrl: '//localhost:8080',
-  pagamentoUrl: '//localhost:8081'
+  pagamentoUrl: '//localhost:8081',
+  distanciaUrl: '//localhost:8082'
 };
 /*
  * For easier debugging in development mode, you can import the following file

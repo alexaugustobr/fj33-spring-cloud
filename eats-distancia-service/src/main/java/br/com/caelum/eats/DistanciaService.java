@@ -1,17 +1,13 @@
-package br.com.caelum.eats.distancia;
+package br.com.caelum.eats;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.caelum.eats.administrativo.TipoDeCozinha;
-import br.com.caelum.eats.restaurante.Restaurante;
-import br.com.caelum.eats.restaurante.RestauranteService;
-import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * Serviço que simula a obtenção dos restaurantes mais próximos a um dado CEP.
@@ -24,7 +20,7 @@ class DistanciaService {
 
 	private static final Pageable LIMIT = PageRequest.of(0,5);
 
-	private RestauranteService restaurantes;
+	private RestauranteRepository restaurantes;
 
 	List<RestauranteComDistanciaDto> restaurantesMaisProximosAoCep(String cep) {
 		List<Restaurante> aprovados = restaurantes.findAllByAprovado(true, LIMIT).getContent();
@@ -32,9 +28,7 @@ class DistanciaService {
 	}
 
 	List<RestauranteComDistanciaDto> restaurantesDoTipoDeCozinhaMaisProximosAoCep(Long tipoDeCozinhaId, String cep) {
-		TipoDeCozinha tipo = new TipoDeCozinha();
-		tipo.setId(tipoDeCozinhaId);
-		List<Restaurante> aprovadosDoTipoDeCozinha = restaurantes.findAllByAprovadoAndTipoDeCozinha(true, tipo, LIMIT).getContent();
+		List<Restaurante> aprovadosDoTipoDeCozinha = restaurantes.findAllByAprovadoAndTipoDeCozinhaId(true, tipoDeCozinhaId, LIMIT).getContent();
 		return calculaDistanciaParaOsRestaurantes(aprovadosDoTipoDeCozinha, cep);
 	}
 

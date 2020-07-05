@@ -36,6 +36,27 @@ services:
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8081"
 
+  eats-distancia-service:
+    build: ./eats-distancia-service
+    ports:
+      - "8082:8082"
+    tty:
+      true
+    restart:
+      unless-stopped
+    networks:
+      - eats-network
+    depends_on:
+      - eats-application-db
+    environment:
+      DATABASE_HOST: "eats-application-db"
+      DATABASE_USER: "root"
+      DATABASE_PASSWORD: "caelum123"
+      DATABASE_NAME: "eats"
+      DATABASE_PORT: "3306"
+      SPRING_PROFILES_ACTIVE: "docker-mysql"
+      SERVER_PORT: "8082"
+
   eats-application:
     build: ./eats-application
     ports:
