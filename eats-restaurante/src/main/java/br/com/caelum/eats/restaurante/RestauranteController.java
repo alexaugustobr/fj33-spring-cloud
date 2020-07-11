@@ -1,19 +1,12 @@
 package br.com.caelum.eats.restaurante;
 
+import br.com.caelum.eats.administrativo.TipoDeCozinha;
+import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
@@ -21,6 +14,7 @@ class RestauranteController {
 
 	private RestauranteRepository restauranteRepo;
 	private CardapioRepository cardapioRepo;
+	private DistanciaRestClient distanciaRestClient;
 
 	@GetMapping("/restaurantes/{id}")
 	RestauranteDto detalha(@PathVariable("id") Long id) {
@@ -54,13 +48,27 @@ class RestauranteController {
 		cardapioRepo.save(cardapio);
 		return restauranteSalvo;
 	}
-
-  @PutMapping("/parceiros/restaurantes/{id}")
-  public RestauranteDto atualiza(@RequestBody RestauranteDto restaurante) {
-    Restaurante doBD = restauranteRepo.getOne(restaurante.getId());
-    restaurante.populaRestaurante(doBD);
-    return new RestauranteDto(restauranteRepo.save(doBD));
-  }
+	
+	@Transactional
+	@PutMapping("/parceiros/restaurantes/{id}")
+	RestauranteDto atualiza(@RequestBody RestauranteDto restauranteParaAtualizar) {
+		Restaurante restaurante = restauranteRepo.getOne(restauranteParaAtualizar.getId());
+		
+		TipoDeCozinha tipoDeCozinhaOriginal = restaurante.getTipoDeCozinha();
+		String cepOriginal = restaurante.getCep();
+		
+		restauranteParaAtualizar.populaRestaurante(restaurante);
+		
+		restaurante = restauranteRepo.save(restaurante);
+		
+		if (!tipoDeCozinhaOriginal.getId().equals(restauranteParaAtualizar.getTipoDeCozinha().getId())
+				||
+				!cepOriginal.equals(restauranteParaAtualizar.getCep())) {
+			distanciaRestClient.restauranteAtualizado(restaurante);
+		}
+		
+		return new RestauranteDto(restaurante);
+	}
 
 
   @GetMapping("/admin/restaurantes/em-aprovacao")
@@ -68,10 +76,14 @@ class RestauranteController {
 		return restauranteRepo.findAllByAprovado(false).stream().map(RestauranteDto::new)
 				.collect(Collectors.toList());
 	}
-
+	
 	@Transactional
 	@PatchMapping("/admin/restaurantes/{id}")
 	public void aprova(@PathVariable("id") Long id) {
 		restauranteRepo.aprovaPorId(id);
+		
+		Restaurante restaurante = restauranteRepo.getOne(id);
+		distanciaRestClient.novoRestauranteAprovado(restaurante);
 	}
+	
 }
