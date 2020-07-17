@@ -36,10 +36,10 @@ class PagamentoController {
 		
 		if (Pagamento.Status.CRIADO.equals(pagamento.getStatus())) {
 			Link confirma = linkTo(methodOn(PagamentoController.class).confirma(id)).withRel("confirma");
-			links.add(confirma);
+			links.add(new LinkWithMethod(confirma, "PUT"));
 			
 			Link cancela = linkTo(methodOn(PagamentoController.class).cancela(id)).withRel("cancela");
-			links.add(cancela);
+			links.add(new LinkWithMethod(cancela, "DELETE"));
 		}
 		
 		PagamentoDto dto = new PagamentoDto(pagamento);

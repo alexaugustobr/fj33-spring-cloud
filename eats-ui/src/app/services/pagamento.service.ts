@@ -20,13 +20,15 @@ export class PagamentoService {
     }
 
     confirma(pagamento): Observable<any> {
-      this.ajustaIds(pagamento);
-      return this.http.put(`${this.API}/${pagamento.id}`, null);
+      const url = pagamento._links.confirma.href;
+      const method = pagamento._links.confirma.method;
+      return this.http.request(method, url);
     }
-
+    
     cancela(pagamento): Observable<any> {
-      this.ajustaIds(pagamento);
-      return this.http.delete(`${this.API}/${pagamento.id}`);
+      const url = pagamento._links.cancela.href;
+      const method = pagamento._links.cancela.method;
+      return this.http.request(method, url);
     }
 
     private ajustaIds(pagamento) {

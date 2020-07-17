@@ -1,0 +1,1 @@
+cd ./eats-ui && npm install && npm run ng build && cd .. && mvn clean install package && docker-compose build && docker-compose up
