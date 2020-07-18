@@ -24,6 +24,7 @@
 		<module>eats-application</module>
 		<module>eats-pagamento-service</module>
 		<module>eats-distancia-service</module>
+		<module>eats-api-gateway</module>
 	</modules>
 	<dependencies>
 		<dependency>
