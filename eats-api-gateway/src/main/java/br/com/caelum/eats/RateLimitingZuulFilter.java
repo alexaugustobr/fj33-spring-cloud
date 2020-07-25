@@ -6,15 +6,17 @@ import com.netflix.zuul.context.RequestContext;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
+/*
+ * Desabilitado devido a problemas de conexão
+ */
+//@Component
 public class RateLimitingZuulFilter extends ZuulFilter {
 	
-	private final RateLimiter rateLimiter = RateLimiter.create(1.0 / 30.0);
+	private final RateLimiter rateLimiter = RateLimiter.create(5);
 	
 	@Override
 	public String filterType() {
