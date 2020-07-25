@@ -16,7 +16,9 @@ services:
       unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: caelum123
+      MYSQL_USER: eats
       MYSQL_DATABASE: eats
+      MYSQL_PASSWORD: caelum123
     ports:
       - "3307:3306"
     networks:
@@ -68,7 +70,7 @@ services:
       DATABASE_PORT: 3306
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8081"
-      PEDIDO_SERVICE_URL: "http://eats-application:8080"
+      PEDIDO_SERVICE_URLS: "http://eats-application:8080"
 
   eats-distancia-service:
     build: ./eats-distancia-service
@@ -109,7 +111,7 @@ services:
       DATABASE_PORT: "3306"
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8080"
-      DISTANCIA_SERVICE_URL: "http://eats-distancia-service:8082"
+      DISTANCIA_SERVICE_URLS: "http://eats-distancia-service:8082"
 
   eats-api-gateway:
     build: ./eats-api-gateway
@@ -122,9 +124,9 @@ services:
     networks:
       - eats-network
     environment:
-      PAGAMENTO_URL: "http://eats-pagamento-service:8081"
-      DISTANCIA_URL: "http://eats-distancia-service:8082"
-      MONOLITO_URL:  "http://eats-application:8080"
+      PAGAMENTO_URLS: "http://eats-pagamento-service:8081"
+      DISTANCIA_URLS: "http://eats-distancia-service:8082"
+      MONOLITO_URLS:  "http://eats-application:8080"
       SPRING_PROFILES_ACTIVE: "docker"
       SERVER_PORT: "9999"
 
