@@ -50,6 +50,19 @@ services:
     networks:
       - eats-network
 
+  eats-eureka:
+    build: ./eats-eureka
+    ports:
+      - "8761:8761"
+    tty:
+      true
+    restart:
+      unless-stopped
+    networks:
+      - eats-network
+    environment:
+      SERVER_PORT: "8761"
+
   eats-pagamento-service:
     build: ./eats-pagamento-service
     ports:
@@ -71,6 +84,7 @@ services:
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8081"
       PEDIDO_SERVICE_URLS: "http://eats-application:8080"
+      EUREKA_HOST: "http://eats-eureka:8761/eureka/"
 
   eats-distancia-service:
     build: ./eats-distancia-service
@@ -84,12 +98,14 @@ services:
       - eats-network
     depends_on:
       - eats-distancia-mongo-db
+      - eats-eureka
     environment:
       DATABASE_HOST: "eats-distancia-mongo-db"
       DATABASE_NAME: "eats_distancia"
       DATABASE_PORT: "27017"
       SPRING_PROFILES_ACTIVE: "docker-mongodb"
       SERVER_PORT: "8082"
+      EUREKA_HOST: "http://eats-eureka:8761/eureka/"
 
   eats-application:
     build: ./eats-application
@@ -112,6 +128,7 @@ services:
       SPRING_PROFILES_ACTIVE: "docker-mysql"
       SERVER_PORT: "8080"
       DISTANCIA_SERVICE_URLS: "http://eats-distancia-service:8082"
+      EUREKA_HOST: "http://eats-eureka:8761/eureka/"
 
   eats-api-gateway:
     build: ./eats-api-gateway
@@ -129,6 +146,7 @@ services:
       MONOLITO_URLS:  "http://eats-application:8080"
       SPRING_PROFILES_ACTIVE: "docker"
       SERVER_PORT: "9999"
+      EUREKA_HOST: "http://eats-eureka:8761/eureka/"
 
   eats-ui:
     build: ./eats-ui
